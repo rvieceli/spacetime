@@ -1,0 +1,31 @@
+GET http://localhost:4000/memories
+
+###
+
+GET http://localhost:4000/memories/798faea4-9a54-41b6-97a1-9389a0a7c7ae
+
+
+
+###
+
+POST http://localhost:4000/memories
+content-type: application/json
+
+{
+  "cover_url": "https://www.github.com/rvieceli.png",
+  "content": "Another one"
+}
+
+###
+
+PATCH  http://localhost:4000/memories/9b692fae-9985-4af1-9830-68f65aa30652
+content-type: application/json
+
+{
+  "content": "Some new content."
+}
+
+###
+
+DELETE http://localhost:4000/memories/2bdee418-307d-44fb-99b1-144686ae4764
+
