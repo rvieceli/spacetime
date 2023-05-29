@@ -1,24 +1,33 @@
+
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjOTZhNTc5Yy04Yjc3LTRhMGYtYjM4MS1hODZlMGY5NGY0NzgiLCJuYW1lIjoiUmFmYWVsIFJpY2FyZG8gVmllY2VsaSIsImF2YXRhcl91cmwiOiJodHRwczovL2F2YXRhcnMuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3UvMjc5MDg0NT92PTQiLCJpYXQiOjE2ODUzNDkyNTEsImV4cCI6MTY4NTQzNTY1MX0.MgmEY6-0jozgOEv_QmnUdWwYE-nelBfwb_1DP_MzDIM
+
+
+###
 GET http://localhost:4000/memories
+Authorization: {{token}}
 
 ###
 
-GET http://localhost:4000/memories/798faea4-9a54-41b6-97a1-9389a0a7c7ae
+GET http://localhost:4000/memories/9cc990da-b9e4-42a2-acbb-bb9660c4c450
+Authorization: {{token}}
 
 
 
 ###
 
 POST http://localhost:4000/memories
+Authorization: {{token}}
 content-type: application/json
 
 {
   "cover_url": "https://www.github.com/rvieceli.png",
-  "content": "Another one"
+  "content": "My first memory"
 }
 
 ###
 
-PATCH  http://localhost:4000/memories/9b692fae-9985-4af1-9830-68f65aa30652
+PATCH  http://localhost:4000/memories/798faea4-9a54-41b6-97a1-9389a0a7c7ae
+Authorization: {{token}}
 content-type: application/json
 
 {
@@ -28,4 +37,5 @@ content-type: application/json
 ###
 
 DELETE http://localhost:4000/memories/2bdee418-307d-44fb-99b1-144686ae4764
+Authorization: {{token}}
 

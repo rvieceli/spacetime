@@ -6,9 +6,23 @@ import { MemoryModule } from './memory/memory.module';
 import { UserModule } from './user/user.module';
 import { APP_FILTER } from '@nestjs/core';
 import { PrismaExceptionsFilter } from './prisma-exceptions.filter';
+import { ConfigModule } from '@nestjs/config';
+import { EnvironmentVariablesSchema } from './environment-variables';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [PrismaModule, MemoryModule, UserModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+      validate: (config) => EnvironmentVariablesSchema.parse(config),
+    }),
+
+    PrismaModule,
+    MemoryModule,
+    UserModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

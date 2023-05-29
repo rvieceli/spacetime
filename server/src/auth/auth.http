@@ -1,0 +1,7 @@
+POST http://localhost:4000/auth/github?code=2b7c04475f18ea735264
+
+
+###
+
+GET http://localhost:4000/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjOTZhNTc5Yy04Yjc3LTRhMGYtYjM4MS1hODZlMGY5NGY0NzgiLCJuYW1lIjoiUmFmYWVsIFJpY2FyZG8gVmllY2VsaSIsImF2YXRhcl91cmwiOiJodHRwczovL2F2YXRhcnMuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3UvMjc5MDg0NT92PTQiLCJpYXQiOjE2ODUzNDkyNTEsImV4cCI6MTY4NTQzNTY1MX0.MgmEY6-0jozgOEv_QmnUdWwYE-nelBfwb_1DP_MzDIM
