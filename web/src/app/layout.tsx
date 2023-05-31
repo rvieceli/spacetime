@@ -1,6 +1,11 @@
 import classNames from "classnames";
 import "./globals.css";
 import { Roboto_Flex, Bai_Jamjuree } from "next/font/google";
+import { cookies } from "next/headers";
+import { Profile } from "@/components/Profile";
+import { SignIn } from "@/components/SignIn";
+import { Hero } from "./Hero";
+import { Copyright } from "./Copyright";
 
 const roboto = Roboto_Flex({ subsets: ["latin"], variable: "--font-roboto" });
 const bayJamjuree = Bai_Jamjuree({
@@ -19,6 +24,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const isAuthenticated = cookies().has("access_token");
+
   return (
     <html lang="en">
       <body
@@ -28,7 +35,19 @@ export default function RootLayout({
           "bg-gray-900 font-sans text-gray-100"
         )}
       >
-        {children}
+        <main className="grid min-h-screen grid-cols-2">
+          <div className="relative flex flex-col items-start justify-between overflow-hidden border-r border-white/10 bg-[url(../assets/bg-stars.svg)] bg-cover p-16 px-28 py-16">
+            <div className="absolute right-0 top-1/2 h-[288px] w-[525px] -translate-y-1/2 translate-x-1/2 rounded-full bg-purple-700 opacity-50 blur-huge" />
+            <div className="absolute bottom-0 right-2 top-0 w-2 bg-stripes" />
+
+            {isAuthenticated ? <Profile /> : <SignIn />}
+            <Hero />
+            <Copyright />
+          </div>
+          <div className="flex flex-col bg-[url(../assets/bg-stars.svg)] bg-cover p-16">
+            {children}
+          </div>
+        </main>
       </body>
     </html>
   );

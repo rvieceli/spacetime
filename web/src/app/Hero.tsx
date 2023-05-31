@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import logo from "../assets/logo.svg";
+import Link from "next/link";
 
 export function Hero() {
   return (
@@ -17,12 +18,12 @@ export function Hero() {
         </p>
       </div>
 
-      <a
-        href="#"
+      <Link
+        href="/memories/new"
         className="inline-block rounded-full bg-green-500 px-5 py-3 font-alt text-sm uppercase leading-none text-black transition-colors hover:bg-green-600"
       >
         Register a memory
-      </a>
+      </Link>
     </div>
   );
 }
