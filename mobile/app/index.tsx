@@ -1,47 +1,13 @@
-import { StatusBar } from "expo-status-bar";
-import {
-  ImageBackground,
-  Linking,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import * as SplashScreen from "expo-splash-screen";
-import { useLoadFonts } from "./src/hooks/useLoadFonts";
-import { useCallback } from "react";
-import { styled } from "nativewind";
+import { Linking, Text, TouchableOpacity, View } from "react-native";
 
-SplashScreen.preventAutoHideAsync();
-
-import bgBlur from "./src/assets/bg-blur.png";
-import Stripes from "./src/assets/stripes.svg";
-import LogoInline from "./src/assets/logo-inline.svg";
-
-const StyledStripes = styled(Stripes);
+import LogoInline from "../src/assets/logo-inline.svg";
+import { useAuth } from "../src/hooks/useAuth";
 
 export default function App() {
-  const isFontsLoaded = useLoadFonts();
-
-  const onLayoutRootView = useCallback(async () => {
-    if (isFontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [isFontsLoaded]);
-
-  if (!isFontsLoaded) {
-    return null;
-  }
+  const { loaded, handleLogin } = useAuth();
 
   return (
-    <ImageBackground
-      onLayout={onLayoutRootView}
-      source={bgBlur}
-      className="relative flex-1 items-center bg-gray-900 py-10"
-      imageStyle={{ position: "absolute", left: "-100%" }}
-    >
-      <StyledStripes className="absolute left-2" />
-
+    <View className="relative flex-1 items-center py-10">
       <View className="flex-1 items-center justify-center gap-6">
         <LogoInline />
 
@@ -58,6 +24,8 @@ export default function App() {
         <TouchableOpacity
           activeOpacity={0.7}
           className="rounded-full bg-green-500 px-5 py-2"
+          disabled={!loaded}
+          onPress={() => handleLogin()}
         >
           <Text className="font-alt text-sm uppercase text-black">
             Register a memory
@@ -74,8 +42,6 @@ export default function App() {
           rvieceli
         </Text>
       </Text>
-
-      <StatusBar style="light" translucent />
-    </ImageBackground>
+    </View>
   );
 }
