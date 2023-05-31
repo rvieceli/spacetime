@@ -3,13 +3,13 @@
 
 
 ###
-GET http://localhost:4000/memories
+GET http://192.168.1.196:4000/memories
 Authorization: {{token}}
 
 ###
 
 GET http://localhost:4000/memories/9cc990da-b9e4-42a2-acbb-bb9660c4c450
-Authorization: {{token}}
+# Authorization: {{token}}
 
 
 
