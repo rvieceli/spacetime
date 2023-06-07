@@ -4,6 +4,7 @@ import { produce } from "immer";
 import * as SecureStore from "expo-secure-store";
 import { JwtPayload, JwtTokenSchema } from "../lib/jwt";
 import { login } from "../services/login";
+import { api } from "../lib/api";
 
 interface AuthState {
   status: "loading" | "authenticated" | "unauthenticated";
@@ -20,14 +21,6 @@ interface AuthStore {
   state: AuthState;
   actions: AuthActions;
 }
-
-// interface AuthStore {
-//   isReady: boolean;
-//   access_token?: string;
-//   payload?: JwtPayload;
-//   login: (access_token: string) => void;
-//   logout: () => void;
-// }
 
 export type SetStateProps = (store: AuthStore) => void;
 
@@ -56,12 +49,14 @@ export const useAuthStore = create<AuthStore>()(
             const { access_token, decoded } = await login(code);
 
             setState(({ state }) => {
+              state.status = "authenticated";
               state.access_token = access_token;
               state.decoded = decoded;
             });
           },
           logout() {
             setState(({ state }) => {
+              state.status = "unauthenticated";
               state.access_token = undefined;
               state.decoded = undefined;
             });
@@ -96,4 +91,17 @@ export const useAuthStore = create<AuthStore>()(
       },
     }
   )
+);
+
+api.interceptors.request.use(
+  async (config) => {
+    const { access_token } = useAuthStore.getState().state;
+
+    if (access_token) {
+      config.headers.Authorization = `Bearer ${access_token}`;
+    }
+
+    return config;
+  },
+  (error) => error
 );

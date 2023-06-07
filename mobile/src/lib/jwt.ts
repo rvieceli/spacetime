@@ -14,9 +14,3 @@ export type JwtPayload = z.infer<typeof JwtPayloadSchema>;
 export const JwtTokenSchema = z
   .string()
   .transform((token) => JwtPayloadSchema.parse(jwtDecode<JwtPayload>(token)));
-
-// export function getUser() {
-//   const access_token = cookies().get("access_token")?.value;
-
-//   return JwtTokenSchema.parse(access_token);
-// }

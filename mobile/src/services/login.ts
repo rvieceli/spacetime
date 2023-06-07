@@ -2,7 +2,7 @@ import { z } from "zod";
 import { JwtTokenSchema } from "../lib/jwt";
 import { api } from "../lib/api";
 
-export const LoginResponseSchema = z
+export const ResponseSchema = z
   .object({
     access_token: z.string(),
   })
@@ -11,14 +11,14 @@ export const LoginResponseSchema = z
     decoded: JwtTokenSchema.parse(data.access_token),
   }));
 
-export type LoginResponse = z.infer<typeof LoginResponseSchema>;
+export type Response = z.infer<typeof ResponseSchema>;
 
 export async function login(code: string) {
   const { access_token, decoded } = await api
-    .post<LoginResponse>("/auth/github", undefined, {
+    .post<Response>("/auth/github", undefined, {
       params: { code },
     })
-    .then((response) => LoginResponseSchema.parse(response.data));
+    .then((response) => ResponseSchema.parse(response.data));
 
   return { access_token, decoded };
 }
