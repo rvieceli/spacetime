@@ -5,7 +5,7 @@ import {
   Scope,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CreateMemoryDto } from './dto/create-memory.dto';
+import { CreateMemoryWithCoverUrlDto } from './dto/create-memory.dto';
 import { UpdateMemoryDto } from './dto/update-memory.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { REQUEST } from '@nestjs/core';
@@ -29,7 +29,7 @@ export class MemoryService {
     return user.id;
   }
 
-  create(createMemoryDto: CreateMemoryDto) {
+  create(createMemoryDto: CreateMemoryWithCoverUrlDto) {
     return this.prisma.memory.create({
       data: { ...createMemoryDto, user_id: this.user_id },
     });

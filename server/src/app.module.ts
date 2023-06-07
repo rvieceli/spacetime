@@ -6,12 +6,16 @@ import { MemoryModule } from './memory/memory.module';
 import { UserModule } from './user/user.module';
 import { APP_FILTER } from '@nestjs/core';
 import { PrismaExceptionsFilter } from './prisma-exceptions.filter';
-import { ConfigModule } from '@nestjs/config';
-import { EnvironmentVariablesSchema } from './environment-variables';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import {
+  EnvironmentVariables,
+  EnvironmentVariablesSchema,
+} from './environment-variables';
 import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { S3Module } from 'nestjs-s3';
 
 @Module({
   imports: [
@@ -19,6 +23,22 @@ import { join } from 'path';
       isGlobal: true,
       cache: true,
       validate: (config) => EnvironmentVariablesSchema.parse(config),
+    }),
+    S3Module.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<EnvironmentVariables>) => ({
+        config: {
+          region: configService.get('AWS_REGION'),
+          endpoint: configService.get('AWS_ENDPOINT_URL'),
+          forcePathStyle: true,
+          credentials: {
+            accessKeyId: configService.get('AWS_ACCESS_KEY_ID') as string,
+            secretAccessKey: configService.get(
+              'AWS_SECRET_ACCESS_KEY',
+            ) as string,
+          },
+        },
+      }),
     }),
     PrismaModule,
     MemoryModule,

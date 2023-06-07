@@ -1,54 +1,36 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
-  FileTypeValidator,
-  MaxFileSizeValidator,
-  ParseFilePipe,
   Post,
   Req,
-  UploadedFile,
-  UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { randomUUID } from 'node:crypto';
-import { diskStorage } from 'multer';
-import { extname } from 'node:path';
-import bytes from 'bytes';
 import { Request } from 'express';
+import { UseUploadInterceptor } from './upload-interceptor.decorator';
+import { UploadedFilePipe } from './uploaded-pipe.decorator';
+import { InjectS3, S3 } from 'nestjs-s3';
 import { Authenticated } from 'src/auth/guards/jwt-auth.guard';
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
+import { ConfigService } from '@nestjs/config';
+import { EnvironmentVariables } from 'src/environment-variables';
+import { randomUUID } from 'crypto';
+import * as mime from 'mime';
 
+const UPLOAD_MAX_FILE_SIZE = 1024 * 1024 * 5; // 10MB
 @Controller('uploads')
 export class UploadController {
+  constructor(
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    @InjectS3() private readonly s3: S3,
+    private readonly configService: ConfigService<EnvironmentVariables>,
+  ) {}
+
   @Post()
   @Authenticated()
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        filename: (request, file, cb) => {
-          const id = randomUUID();
-          const extension = extname(file.originalname);
-          const fileName = `${id}${extension}`;
-
-          cb(null, fileName);
-        },
-        destination: './uploads',
-      }),
-    }),
-  )
+  @UseUploadInterceptor()
   upload(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({
-            maxSize: 1024 * 1024 * 5,
-            message: (size) => `File size should be less than ${bytes(size)}.`,
-          }),
-          new FileTypeValidator({
-            fileType: /^(image|video)\/[a-zA-Z0-9]+/,
-          }),
-        ],
-        errorHttpStatusCode: 400,
-      }),
-    )
+    @UploadedFilePipe()
     file: Express.Multer.File,
     @Req() request: Request,
   ) {
@@ -56,5 +38,35 @@ export class UploadController {
     const file_url = new URL(`/uploads/${file.filename}`, serverUrl).toString();
 
     return { file_url };
+  }
+
+  @Post('sign')
+  @Authenticated()
+  async sign(@Body('contentType') contentType: string) {
+    if (
+      !contentType ||
+      !['image', 'video'].some((type) => contentType.startsWith(type))
+    ) {
+      throw new BadRequestException('contentType must be image or video.');
+    }
+
+    const fileName = `${randomUUID()}.${mime.getExtension(contentType)}`;
+
+    const signature = await createPresignedPost(this.s3, {
+      Bucket: this.configService.get('AWS_S3_BUCKET_NAME') as string,
+      Key: fileName,
+      Fields: {
+        key: fileName,
+      },
+      Conditions: [
+        ['starts-with', '$Content-Type', 'image/,video/'],
+        ['content-length-range', 1, UPLOAD_MAX_FILE_SIZE],
+      ],
+    });
+
+    return {
+      ...signature,
+      file_url: `${signature.url}/${signature.fields.key}`,
+    };
   }
 }
