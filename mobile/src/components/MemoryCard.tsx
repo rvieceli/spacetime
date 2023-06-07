@@ -1,5 +1,4 @@
-import { Image, Text, TouchableOpacity, View } from "react-native";
-import { ResizeMode, Video } from "expo-av";
+import { Text, TouchableOpacity, View } from "react-native";
 import { Link } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 
@@ -32,25 +31,11 @@ function MemoryCardComponent({ memory }: MemoryCardProps) {
       <View className="space-y-4 px-8">
         <MediaSelector
           source={{ uri: memory.cover_url }}
-          renderImage={(source) => (
-            <Image
-              source={source}
-              className="aspect-video w-full rounded-lg object-cover"
-            />
-          )}
-          renderVideo={(source) => (
-            <Video
-              source={source}
-              useNativeControls
-              resizeMode={ResizeMode.COVER}
-              shouldPlay
-              isLooping
-              isMuted
-              className="aspect-video w-full rounded-lg"
-            />
-          )}
+          renderImage={(source) => <MediaSelector.Image source={source} />}
+          renderVideo={(source) => <MediaSelector.Video source={source} />}
         />
-        <Text className="font-body text-base leading-relaxed text-gray-100 text-justify">
+
+        <Text className="text-justify font-body text-base leading-relaxed text-gray-100">
           {memory.excerpt}
         </Text>
         <Link

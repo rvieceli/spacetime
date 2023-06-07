@@ -1,15 +1,8 @@
 import { Unmatched, useLocalSearchParams } from "expo-router";
-import {
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useGetMemory } from "../../src/hooks/useGetMemory";
 
 import { MediaSelector } from "../../src/components/MediaSelector";
-import { ResizeMode, Video } from "expo-av";
 import { Background } from "../../src/components/Background";
 import { useMeasures } from "../../src/hooks/useMeasures";
 import { Loading } from "../../src/components/Loading";
@@ -46,23 +39,8 @@ export default function MemoryDetail() {
       <View className="mt-2 flex-1 px-8">
         <MediaSelector
           source={{ uri: data?.cover_url }}
-          renderImage={(source) => (
-            <Image
-              source={source}
-              className="aspect-video w-full rounded-lg object-cover"
-            />
-          )}
-          renderVideo={(source) => (
-            <Video
-              source={source}
-              useNativeControls
-              resizeMode={ResizeMode.COVER}
-              shouldPlay
-              isLooping
-              isMuted
-              className="aspect-video w-full rounded-lg"
-            />
-          )}
+          renderImage={(source) => <MediaSelector.Image source={source} />}
+          renderVideo={(source) => <MediaSelector.Video source={source} />}
         />
         <ScrollView
           className="mt-2 flex-1 pt-2"
@@ -74,7 +52,7 @@ export default function MemoryDetail() {
           showsVerticalScrollIndicator={false}
         >
           <SelectableText
-            className="font-body text-base leading-relaxed text-gray-100 text-justify"
+            className="text-justify font-body text-base leading-relaxed text-gray-100"
             style={data.is_mine && { marginBottom: footerHeight + 20 }}
           >
             {data.content}
