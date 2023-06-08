@@ -5,10 +5,11 @@ import { useGetMemory } from "../../src/hooks/useGetMemory";
 import { MediaSelector } from "../../src/components/MediaSelector";
 import { Background } from "../../src/components/Background";
 import { useMeasures } from "../../src/hooks/useMeasures";
-import { Loading } from "../../src/components/Loading";
 import { SelectableText } from "../../src/components/SelectableText";
 import { useDeleteMemory } from "../../src/hooks/useDeleteMemory";
 import { useGoBack } from "../../src/hooks/useGoBack";
+import { Skeleton } from "../../src/components/Skeleton";
+import { format } from "../../src/lib/date";
 
 export default function MemoryDetail() {
   const { footerHeight } = useMeasures();
@@ -20,7 +21,12 @@ export default function MemoryDetail() {
 
   function render() {
     if (isLoading) {
-      return <Loading />;
+      return (
+        <Skeleton className="mt-2 flex-1 px-8">
+          <Skeleton.Box className="mb-6 aspect-video w-full rounded-lg object-cover" />
+          <Skeleton.Text lines={15} className="m-1 h-4 rounded-sm" />
+        </Skeleton>
+      );
     }
 
     if (isError) {
@@ -51,12 +57,18 @@ export default function MemoryDetail() {
           }}
           showsVerticalScrollIndicator={false}
         >
-          <SelectableText
-            className="text-justify font-body text-base leading-relaxed text-gray-100"
-            style={data.is_mine && { marginBottom: footerHeight + 20 }}
-          >
+          <SelectableText className="text-justify font-body text-base leading-relaxed text-gray-100">
             {data.content}
           </SelectableText>
+          <View
+            className="flex-row items-center gap-2 mt-2"
+            style={data.is_mine && { marginBottom: footerHeight + 20 }}
+          >
+            <View className="h-px w-5 bg-gray-50" />
+            <Text className="font-body text-sm text-gray-100">
+              {format(data.created_at, "full")}
+            </Text>
+          </View>
 
           {data.is_mine && (
             <TouchableOpacity

@@ -1,4 +1,4 @@
-import { useLoadFonts } from "../src/hooks/useLoadFonts";
+import { useLayoutEffect } from "react";
 import {
   SplashScreen,
   Stack,
@@ -7,18 +7,17 @@ import {
   useSegments,
 } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useAuthStore } from "../src/store/useAuth.store";
+import { LogBox } from "react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useLayoutEffect } from "react";
 
-import { LogoutButton } from "../src/components/LogoutButton";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAuthStore } from "../src/store/useAuth.store";
+import { useLoadFonts } from "../src/hooks/useLoadFonts";
 import { useAppStateChangeListener } from "../src/hooks/useAppStateChangeListener";
+import { LogoutButton } from "../src/components/LogoutButton";
 import { Header } from "../src/components/Header";
+import { NetworkInfo } from "../src/components/NetworkInfo";
 
 import "../src/config/onlineManager";
-import { NetworkInfo } from '../src/components/NetworkInfo';
-import { LogBox } from 'react-native';
 
 const client = new QueryClient();
 
@@ -30,7 +29,6 @@ export default function Layout() {
   const segments = useSegments();
   const navigation = useNavigation();
   const router = useRouter();
-  const { top } = useSafeAreaInsets();
 
   const isLoading = !isFontsLoaded || status === "loading";
 

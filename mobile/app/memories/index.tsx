@@ -5,11 +5,14 @@ import { Link } from "expo-router";
 import { colors } from "../../src/config/colors";
 
 import { useGetMemories } from "../../src/hooks/useGetMemories";
-import { MemoryCard } from "../../src/components/MemoryCard";
+import {
+  MemoryCard,
+  MemoryCardSkeleton,
+} from "../../src/components/MemoryCard";
 import { useRefreshOnFocus } from "../../src/hooks/useRefreshOnFocus";
 import { Background } from "../../src/components/Background";
 import { useMeasures } from "../../src/hooks/useMeasures";
-import { Loading } from "../../src/components/Loading";
+import { Skeleton } from "../../src/components/Skeleton";
 
 export default function Memories() {
   const { footerHeight } = useMeasures();
@@ -19,31 +22,37 @@ export default function Memories() {
 
   return (
     <Background>
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <MemoryCard memory={item} />}
-        ItemSeparatorComponent={() => <View className="h-10" />}
-        contentContainerStyle={{
-          paddingTop: 12,
-          paddingBottom: footerHeight,
-        }}
-        ListEmptyComponent={() => {
-          if (isLoading) {
-            return <Loading />;
-          }
-          return (
-            <View className="flex-1 items-center justify-center">
-              <Link href="memories/new">
-                <Text className="text-center font-body leading-relaxed text-gray-100">
-                  You don't have any memories,{"\n"}start{" "}
-                  <Text className="underline">creating now</Text>
-                </Text>
-              </Link>
-            </View>
-          );
-        }}
-      />
+      {isLoading ? (
+        <Skeleton className="mt-2 flex-1 space-y-10 px-8">
+          <MemoryCardSkeleton />
+          <MemoryCardSkeleton />
+          <MemoryCardSkeleton />
+        </Skeleton>
+      ) : (
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <MemoryCard memory={item} />}
+          ItemSeparatorComponent={() => <View className="h-10" />}
+          contentContainerStyle={{
+            paddingTop: 12,
+            paddingBottom: footerHeight,
+            flexGrow: 1,
+          }}
+          ListEmptyComponent={() => {
+            return (
+              <View className="flex-1 items-center justify-center">
+                <Link href="memories/new">
+                  <Text className="text-center font-body leading-relaxed text-gray-100">
+                    You don't have any memories,{"\n"}start{" "}
+                    <Text className="underline">creating now</Text>
+                  </Text>
+                </Link>
+              </View>
+            );
+          }}
+        />
+      )}
 
       <Link href="memories/new" asChild>
         <TouchableOpacity

@@ -1,10 +1,12 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View, ViewProps } from "react-native";
 import { Link } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 
 import { MediaSelector } from "./MediaSelector";
 import { colors } from "../config/colors";
 import { memo } from "react";
+import { Skeleton } from "./Skeleton";
+import { format } from "../lib/date";
 
 interface MemoryCardProps {
   memory: {
@@ -14,10 +16,6 @@ interface MemoryCardProps {
     created_at: Date;
   };
 }
-
-const format = new Intl.DateTimeFormat(undefined, {
-  dateStyle: "medium",
-}).format;
 
 function MemoryCardComponent({ memory }: MemoryCardProps) {
   return (
@@ -51,6 +49,17 @@ function MemoryCardComponent({ memory }: MemoryCardProps) {
           </TouchableOpacity>
         </Link>
       </View>
+    </View>
+  );
+}
+
+export function MemoryCardSkeleton(props: ViewProps) {
+  return (
+    <View {...props}>
+      <Skeleton.Text className="h-4 w-[30%] rounded-sm" />
+      <Skeleton.Box className="my-4 aspect-video w-full rounded-lg object-cover" />
+      <Skeleton.Text lines={3} className="my-1 h-4 rounded-sm" />
+      <Skeleton.Text className="mt-4 h-4 w-[35%] rounded-sm" />
     </View>
   );
 }

@@ -14,7 +14,6 @@ export const ResponseSchema = z.array(MemorySchema);
 export type Response = z.infer<typeof ResponseSchema>;
 
 export async function getMemories() {
-  console.log("getMemories");
   return api
     .get<Response>("/memories")
     .then((response) => ResponseSchema.parse(response.data));
