@@ -5,6 +5,8 @@ import * as SecureStore from "expo-secure-store";
 import { JwtPayload, JwtTokenSchema } from "../lib/jwt";
 import { login } from "../services/login";
 import { api } from "../lib/api";
+import { random } from "../lib/random";
+import Constants from "expo-constants";
 
 interface AuthState {
   status: "loading" | "authenticated" | "unauthenticated";
@@ -99,6 +101,10 @@ api.interceptors.request.use(
 
     if (access_token) {
       config.headers.Authorization = `Bearer ${access_token}`;
+    }
+
+    if (Constants.expoConfig?.extra?.THROTTLE_API) {
+      await new Promise((resolve) => setTimeout(resolve, random(1, 3) * 1000));
     }
 
     return config;

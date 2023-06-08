@@ -13,6 +13,7 @@ import Animated, {
   eq,
   EasingNode,
 } from "react-native-reanimated";
+import { random } from "../lib/random";
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 const { width } = Dimensions.get("window");
@@ -55,10 +56,6 @@ function Container({ style, ...props }: ViewProps) {
 
 function Box({ style, ...props }: ViewProps) {
   return <View {...props} style={[style, { backgroundColor: "#000" }]} />;
-}
-
-function random(min: number, max: number) {
-  return Math.random() * (max - min) + min;
 }
 
 function Text({ style, lines, ...props }: ViewProps & { lines?: number }) {

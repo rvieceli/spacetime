@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#09090A"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.rvieceli.mobile"
@@ -28,10 +26,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "API_URL": "http://192.168.1.196:4000",
-      "GITHUB_CLIENT_ID": "Iv1.ba5a5b4b79679f05"
     }
   }
 }
