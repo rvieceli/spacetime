@@ -2,44 +2,58 @@
 
 import { MediaPicker } from "@/components/MediaPicker";
 import { Camera } from "lucide-react";
-import { SubmitHandler, UseFormHandleSubmit, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback } from "react";
-import { upload } from "@/services/upload";
-import { createMemory } from "@/services/createMemory";
 import { useRouter } from "next/navigation";
+import { createMemoryAndUploadToS3 } from "@/services/createMemoryAndUploadToS3";
+import classNames from "classnames";
+import { isAxiosError } from "axios";
 
 const FormSchema = z.object({
   is_public: z.boolean().default(false),
   content: z.string().trim().nonempty(),
-  file: z.custom<FileList>((files) => files instanceof FileList),
+  file: z.custom<FileList>(
+    (files) => !!files && files instanceof FileList && files.length > 0,
+    "You must attach a file"
+  ),
 });
 
 type FormValues = z.infer<typeof FormSchema>;
 
 export function Form() {
   const router = useRouter();
-  const { register, handleSubmit } = useForm<FormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting, errors },
+    clearErrors,
+    setError,
+  } = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
   });
 
   const onSubmit = useCallback<SubmitHandler<FormValues>>(async (values) => {
     const { content, file, is_public } = values;
+    try {
+      await createMemoryAndUploadToS3({
+        content,
+        is_public,
+        file: file[0],
+      });
 
-    const formData = new FormData();
+      router.push(`/`);
+    } catch (error) {
+      const message = isAxiosError(error)
+        ? error.message
+        : "Something went wrong. Check the form and try again.";
 
-    formData.append("file", file[0]);
-
-    const { file_url } = await upload(formData);
-
-    await createMemory({
-      content,
-      is_public,
-      cover_url: file_url,
-    });
-
-    router.push(`/memories`);
+      setError("root", {
+        type: "manual",
+        message,
+      });
+    }
   }, []);
 
   return (
@@ -79,12 +93,36 @@ export function Form() {
         {...register("content")}
       />
 
-      <button
-        type="submit"
-        className="inline-block self-end rounded-full bg-green-500 px-5 py-3 font-alt text-sm uppercase leading-none text-black transition-colors hover:bg-green-600"
-      >
-        Save
-      </button>
+      <div className="flex flex-row items-start justify-between gap-2">
+        {errors.file || errors.content || errors.root ? (
+          <button
+            className={classNames("rounded bg-red-500 px-4 py-1 text-left")}
+            onClick={() => clearErrors()}
+          >
+            {errors.file && (
+              <p className="text-xs text-white">{errors.file.message}</p>
+            )}
+
+            {errors.content && (
+              <p className="text-xs text-white">{errors.content.message}</p>
+            )}
+
+            {errors.root && (
+              <p className="text-xs text-white">{errors.root.message}</p>
+            )}
+          </button>
+        ) : (
+          <div />
+        )}
+
+        <button
+          type="submit"
+          className="inline-block self-end rounded-full bg-green-500 px-5 py-3 font-alt text-sm uppercase leading-none text-black transition-colors hover:bg-green-600 disabled:opacity-50"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Saving" : "Save"}
+        </button>
+      </div>
     </form>
   );
 }

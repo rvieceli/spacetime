@@ -32,7 +32,7 @@ export default function RootLayout({
         className={classNames(
           roboto.variable,
           bayJamjuree.variable,
-          "bg-gray-900 font-sans text-gray-100"
+          "cursor-all-scroll bg-gray-900 font-sans text-gray-100"
         )}
       >
         <main className="grid min-h-screen grid-cols-2">
@@ -44,7 +44,7 @@ export default function RootLayout({
             <Hero />
             <Copyright />
           </div>
-          <div className="flex flex-col bg-[url(../assets/bg-stars.svg)] bg-cover p-16">
+          <div className="hover:overflow-y flex max-h-screen flex-col overflow-y-auto bg-[url(../assets/bg-stars.svg)] bg-cover">
             {children}
           </div>
         </main>
