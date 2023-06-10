@@ -6,7 +6,20 @@ const nextConfig = {
         protocol: "https",
         hostname: "avatars.githubusercontent.com",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "4004",
+      },
     ],
+  },
+  rewrites: async () => {
+    return [
+      {
+        source: "/api/proxy/:path*",
+        destination: `${process.env.BACKEND_URL}/:path*`,
+      },
+    ];
   },
 };
 

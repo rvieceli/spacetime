@@ -7,3 +7,8 @@ export function getCookie(name: string): string | undefined {
   const Cookies = require("js-cookie");
   return Cookies.get(name);
 }
+
+
+export function isAuthenticated(): boolean {
+  return !!getCookie("access_token");
+}

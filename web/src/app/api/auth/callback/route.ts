@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.redirect(redirectUrl, {
     headers: {
-      "Set-Cookie": `access_token=${access_token}; Path=/; Expires=${decoded.exp.toUTCString()}`,
+      "Set-Cookie": `access_token=${access_token}; Path=/; Expires=${decoded.exp.toUTCString()}; HttpOnly`,
     },
   });
 }
