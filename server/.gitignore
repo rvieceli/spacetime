@@ -38,3 +38,6 @@ lerna-debug.log*
 prisma/dev.sqlite
 /uploads/*
 !/uploads/.gitkeep
+
+
+/prisma/dev.sqlite*
