@@ -11,6 +11,12 @@ export const EnvironmentVariablesSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string(),
   AWS_S3_BUCKET_NAME: z.string(),
   AWS_ENDPOINT_URL: z.string().url().optional(),
+
+  THROTTLE_API: z
+    .any()
+    .optional()
+    .default(false)
+    .transform((value) => !!value),
 });
 
 export type EnvironmentVariables = z.output<typeof EnvironmentVariablesSchema>;

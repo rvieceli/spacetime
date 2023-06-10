@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { MemoryModule } from './memory/memory.module';
 import { UserModule } from './user/user.module';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { PrismaExceptionsFilter } from './prisma-exceptions.filter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
@@ -16,6 +14,8 @@ import { UploadModule } from './upload/upload.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { S3Module } from 'nestjs-s3';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { SlowDownThrottlerGuard } from './slow-down-throttler.guard';
 
 @Module({
   imports: [
@@ -52,13 +52,19 @@ import { S3Module } from 'nestjs-s3';
         index: false,
       },
     }),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
     {
       provide: APP_FILTER,
       useClass: PrismaExceptionsFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: SlowDownThrottlerGuard,
     },
   ],
 })

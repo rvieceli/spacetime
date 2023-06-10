@@ -3,7 +3,7 @@
         <AllowedOrigin>*</AllowedOrigin>
         <AllowedMethod>POST</AllowedMethod>
         <AllowedMethod>GET</AllowedMethod>
-        <MaxAgeSeconds>3000</MaxAgeSeconds>
+        <MaxAgeSeconds>4004</MaxAgeSeconds>
         <AllowedHeader>Authorization</AllowedHeader>
     </CORSRule>
 </CORSConfiguration>
