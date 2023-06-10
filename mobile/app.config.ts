@@ -7,7 +7,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     slug: "mobile",
     ...config,
     extra: {
-      API_URL: process.env.API_URL,
+      BACKEND_URL: process.env.BACKEND_URL,
       GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     },
   };
