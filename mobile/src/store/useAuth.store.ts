@@ -103,10 +103,6 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${access_token}`;
     }
 
-    if (Constants.expoConfig?.extra?.THROTTLE_API) {
-      await new Promise((resolve) => setTimeout(resolve, random(1, 3) * 1000));
-    }
-
     return config;
   },
   (error) => error
